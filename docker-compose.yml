@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mn_products:
+    container_name: 'mn_products'
+    image: postgres:15.2-alpine3.17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mn_products
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_LISTEN_ADDRESSES: mn_products
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    network_mode: "host"
+
+  microservice-products:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    network_mode: "host"
+    depends_on:
+      - mn_products
