@@ -1,60 +1,107 @@
-## Micronaut 4.3.6 Documentation
+# Microservicio de Productos Creado Por KennerEspinalDev
 
-- [User Guide](https://docs.micronaut.io/4.3.6/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.3.6/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.3.6/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+_Sistema desarrollado por KennerDev_
 
-- [Micronaut Maven Plugin documentation](https://micronaut-projects.github.io/micronaut-maven-plugin/latest/)
-## Feature micronaut-aot documentation
+## Comenzando 🚀
 
-- [Micronaut AOT documentation](https://micronaut-projects.github.io/micronaut-aot/latest/guide/)
+### Pre-requisitos 📋
+
+_Para poder inicializar el sistema se requiere lo siguiente :_
+
+```
+1. Git.
+2. Docker & Docker Compose.
+3. PostgreSQL.
+4. IntelliJ (Editor de Codigo).
+5. Java.
+7. Micronaut.
+```
+
+### Clonar el Repositorio 🔧
+```
+git clone https://github.com/KennerEspinal/Micronaut-Microservice.git
+```
+
+## Configuring the Dockerfile
+-	Dockerfile.
+```sh
+# Establece la imagen base para la fase de compilación
+FROM maven:3.8.4-openjdk-17 AS build
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el archivo pom.xml del contexto de construcción local al directorio de trabajo en el contenedor
+COPY pom.xml .
+
+# Copia el directorio src del contexto de construcción local al directorio de trabajo en el contenedor
+COPY src ./src
+
+# Ejecuta el comando "mvn package -DskipTests" para compilar el proyecto Maven y generar el archivo JAR de la aplicación
+RUN mvn package -DskipTests
+
+# Establece la imagen base para la fase de empaquetado
+FROM openjdk:17-jdk-slim AS final
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el archivo JAR generado durante la fase de compilación desde el directorio /app/target al directorio /app en esta segunda fase
+COPY --from=build /app/target/microservice-products-*.jar /app/microservice-products.jar
+
+# Copia los archivos de Swagger generados durante la compilación al directorio correspondiente dentro del contenedor
+COPY --from=build /app/target/classes/META-INF/swagger /app/META-INF/swagger
+
+# Expone el puerto 8080 del contenedor para que la aplicación pueda ser accedida desde fuera del contenedor
+EXPOSE 8080
+
+# Instala la herramienta "dockerize" para esperar a que la base de datos esté disponible antes de iniciar la aplicación
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
+    rm dockerize-linux-amd64-v0.6.1.tar.gz
+
+# Define el comando predeterminado que se ejecutará cuando se inicie el contenedor
+CMD ["dockerize", "-wait", "tcp://0.0.0.0:5432", "-timeout", "10s", "java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "/app/microservice-products.jar"]
+
+```
+
+-	Dockerfile.dev
+```sh
+# Establece la imagen base para la fase de desarrollo
+FROM maven:3.8.4-openjdk-17 AS Development
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia todos los archivos del contexto de construcción local al directorio de trabajo en el contenedor
+COPY . .
+
+# Expone el puerto 8080 del contenedor para que la aplicación pueda ser accedida desde fuera del contenedor
+EXPOSE 8080
+
+# Define el comando predeterminado que se ejecutará cuando se inicie el contenedor, utilizando Maven para ejecutar la aplicación Micronaut
+CMD ["mvn", "mn:run"]
+
+```
+
+```
+## Distribution using Docker
+-1. Build the services:
+```sh
+docker compose up
+```
+--The app be available on http://localhost:8080/swagger-ui/
 
 
-## Feature lombok documentation
+## Autor ✒️
 
-- [Micronaut Project Lombok documentation](https://docs.micronaut.io/latest/guide/index.html#lombok)
+* **Kenner Espinal**
 
-- [https://projectlombok.org/features/all](https://projectlombok.org/features/all)
+## Expresiones de Gratitud 🎁
 
-
-## Feature serialization-jackson documentation
-
-- [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
-
-
-## Feature maven-enforcer-plugin documentation
-
-- [https://maven.apache.org/enforcer/maven-enforcer-plugin/](https://maven.apache.org/enforcer/maven-enforcer-plugin/)
-
-
-## Feature hibernate-jpa documentation
-
-- [Micronaut Hibernate JPA documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#hibernate)
-
-
-## Feature jdbc-hikari documentation
-
-- [Micronaut Hikari JDBC Connection Pool documentation](https://micronaut-projects.github.io/micronaut-sql/latest/guide/index.html#jdbc)
-
-
-## Feature openapi documentation
-
-- [Micronaut OpenAPI Support documentation](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/index.html)
-
-- [https://www.openapis.org](https://www.openapis.org)
-
-
-## Feature swagger-ui documentation
-
-- [Micronaut Swagger UI documentation](https://micronaut-projects.github.io/micronaut-openapi/latest/guide/index.html)
-
-- [https://swagger.io/tools/swagger-ui/](https://swagger.io/tools/swagger-ui/)
-
-
-## Feature test-resources documentation
-
-- [Micronaut Test Resources documentation](https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/)
-
-
+* Comenta a otros sobre este proyecto 📢
+* Invitanos una cerveza 🍺 o un café ☕ a alguien del equipo. 
+* Da las gracias públicamente 🤓.
+* etc.
