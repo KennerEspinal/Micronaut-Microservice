@@ -92,6 +92,8 @@ CMD ["mvn", "mn:run"]
 ```sh
 docker compose up
 ```
+```
+
 --The app be available on http://localhost:8080/swagger-ui/
 
 
