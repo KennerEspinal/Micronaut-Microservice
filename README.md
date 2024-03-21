@@ -88,10 +88,13 @@ CMD ["mvn", "mn:run"]
 
 ```
 ## Distribution using Docker
--1. Build the services:
+-1. Build the Docker Image:
 ```sh
-docker compose up
+docker build -t  vue_js .
 ```
+-2. Run the Docker container:
+```sh
+docker run 8080:8080 vue_js
 ```
 
 --The app be available on http://localhost:8080/swagger-ui/
