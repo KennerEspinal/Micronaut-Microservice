@@ -90,6 +90,11 @@ CMD ["mvn", "mn:run"]
 ```sh
 docker compose up
 ```
+-2. Build image with Docker:
+```sh
+docker build -t micronaut-service .
+docker run -d -p 8080:8080 micronaut-service
+```
 
 --The app be available on http://localhost:8080/swagger-ui/
 
